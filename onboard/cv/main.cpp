@@ -160,14 +160,15 @@ int main() {
 
 
 
-    /*initialize obstacle detection*/
+  /*
+    initialize obstacle detection
     obstacleMessage.detected = false;
     #if OBSTACLE_DETECTION
       float pixelWidth = src.cols;
       //float pixelHeight = src.rows;
       int roverPixWidth = calcRoverPix(distThreshold, pixelWidth);
 
-      /* obstacle detection */
+       obstacle detection 
       obstacle_return obstacle_detection =  avoid_obstacle_sliding_window(depth_img, src,  num_sliding_windows , roverPixWidth);
       if(obstacle_detection.bearing > 0.05 || obstacle_detection.bearing < -0.05) {
         // cout<< "bearing not zero!\n";
@@ -180,7 +181,10 @@ int main() {
       #endif
 
     #endif
+    */
 
+   //New Obstacle Detection
+    imshow("vMap", vDisparity(depth_img));
     lcm_.publish("/target_list", &arTagsMessage);
     lcm_.publish("/obstacle", &obstacleMessage);
 
