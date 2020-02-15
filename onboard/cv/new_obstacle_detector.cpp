@@ -56,7 +56,7 @@ Mat vDisparity(Mat &depthIn)
     int rows = depthIn.rows;
     
     //Calculate multiplier and column size for maps
-    float* temp = calculateMultiplier(9.3, 0.12);
+    float* temp = calculateMultiplier(9.3, 0.02);
     float imgCols = *temp;
     float multiplier = *(temp+1);
     cerr<<"Image Columns: "<<imgCols<<endl;
