@@ -44,6 +44,8 @@ float* calculateMultiplier(float max_depth, float step)
     return end;
 }
 
+//Filter vMap
+
 //Calculates vDisparity Map
 Mat vDisparity(Mat &depthIn)
 {
@@ -56,7 +58,7 @@ Mat vDisparity(Mat &depthIn)
     int rows = depthIn.rows;
     
     //Calculate multiplier and column size for maps
-    float* temp = calculateMultiplier(9.3, 0.02);
+    float* temp = calculateMultiplier(9.3, 0.01);
     float imgCols = *temp;
     float multiplier = *(temp+1);
     cerr<<"Image Columns: "<<imgCols<<endl;
@@ -98,7 +100,15 @@ Mat vDisparity(Mat &depthIn)
     //Write out rows and cols for debugging
     cout<<rows<<endl;
     cout<<cols<<endl;
-
+    
+    //Filter for conotours
+    vector<vector<Point> > contours;
+    Scalar color = {255,0,0};
+    vector<Vec4i> hierarchy;
+    vMap.convertTo(white1,CV_8UC1);
+    findContours(white1,contours,hierarchy,CV_RETR_TREE,CV_CHAIN_APPROX_SIMPLE,Point(0,0));
+    drawContours(white1, contours, 0, color, -1);
+    imshow("Out",white1);
     waitKey();
     return vMap;
 
