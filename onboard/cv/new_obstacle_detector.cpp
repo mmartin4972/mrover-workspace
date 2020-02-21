@@ -92,6 +92,13 @@ Mat vDisparity(Mat &depthIn)
     basicContours = vMap;
     findContours(basicContours,contours,hierarchy,CV_RETR_TREE,CV_CHAIN_APPROX_SIMPLE,Point(0,0));
     drawContours(basicContours, contours, 0, color, -1);
+    vector<Vec4i> lines;
+    HoughLinesP( basicContours, lines, 1, CV_PI/180, 80, 30, 10 );
+    for( size_t i = 0; i < lines.size(); i++ )
+    {
+        line( basicContours, Point(lines[i][0], lines[i][1]),
+        Point( lines[i][2], lines[i][3]), Scalar(0,0,255), 3, 8 );
+    }
     imshow("Basic",basicContours);
 
 
@@ -104,11 +111,38 @@ Mat vDisparity(Mat &depthIn)
     char* window_name = "Canny";
     Mat cannyContours(rows,imgCols, CV_8UC1, Scalar(0));
     Mat dst(rows,imgCols, CV_8UC1, Scalar(0));
-    blur( vMap, vMap, Size(3,3) );
-    Canny(vMap, cannyContours, lowThreshold, lowThreshold*ratio, kernel_size );
-    vMap.copyTo(dst,cannyContours);
-    imshow(window_name, dst);
     
+    //Image Erosion Techniques
+
+    //blur( vMap, vMap, Size(3,3) );    
+    
+    //Morphological Erosion
+    /*
+    int erosion_elem = 0.3;
+    int erosion_size = 0.3;
+    int dilation_elem = 15;
+    int dilation_size = 15;
+    int const max_elem = 2;
+    int const max_kernel_size = 21;
+    
+    Mat element = getStructuringElement( MORPH_RECT,
+                                       Size( 2*erosion_size + 1, 2*erosion_size+1 ),
+                                       Point( erosion_size, erosion_size ) );
+    
+    erode(vMap,vMap,element);
+    
+
+    Canny(vMap, cannyContours, lowThreshold, lowThreshold*ratio, kernel_size );
+   vector<Vec4i> lines;
+    vMap.copyTo(dst,cannyContours);
+    HoughLinesP( dst, lines, 1, CV_PI/180, 80, 30, 10 );
+    for( size_t i = 0; i < lines.size(); i++ )
+    {
+        line( dst, Point(lines[i][0], lines[i][1]),
+        Point( lines[i][2], lines[i][3]), Scalar(0,0,255), 3, 8 );
+    }
+    imshow(window_name, dst);
+    */
     return vMap;
 
 }
@@ -117,7 +151,16 @@ Mat vDisparity(Mat &depthIn)
 
 
 
-
+/*
+What needs to be done: 
+If I want this to work what I need to do is to find away to filter out the ground that
+way I can identify objects that are on the ground and just focus on finding contours
+without the background noise of the ground. If I am able to filter out the ground my contour
+and hough line transformation should become adequate for identifying areas containing pixels
+in close proximity. Once I find the contours of these pixels I can itterate through the contour
+vector and check those values against those on the u map and we should be chilling. Right now
+I need to focus on filtering out the ground. 2/21/20
+*/
 
 
 
