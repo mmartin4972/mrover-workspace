@@ -184,7 +184,7 @@ int main() {
     */
 
    //New Obstacle Detection
-    imshow("vMap", vDisparity(depth_img));
+    vDisparity(depth_img);
     lcm_.publish("/target_list", &arTagsMessage);
     lcm_.publish("/obstacle", &obstacleMessage);
 

@@ -58,7 +58,7 @@ Mat vDisparity(Mat &depthIn)
     int rows = depthIn.rows;
     
     //Calculate multiplier and column size for maps
-    float* temp = calculateMultiplier(9.3, 0.01);
+    float* temp = calculateMultiplier(9.3, 0.02);
     float imgCols = *temp;
     float multiplier = *(temp+1);
     cerr<<"Image Columns: "<<imgCols<<endl;
@@ -66,9 +66,7 @@ Mat vDisparity(Mat &depthIn)
 
     //Create empty vMap
     Mat vMap(rows, imgCols, CV_32SC1, Scalar(0));
-    Mat white(rows, imgCols, CV_32SC1, Scalar(255));
-    Mat white1(rows,imgCols, CV_32FC1, Scalar(0));
-
+    
     //Traverse through image and increment values in vMap that correspond with depth
     for(int y = 0; y < rows; ++y)
     {
@@ -81,41 +79,39 @@ Mat vDisparity(Mat &depthIn)
 
     }
 
-    //Write and show raw vDisparity Mat
-    ofstream vMapS;
-    vMapS.open("vMap.txt");
-    imshow("vMap", vMap);
-    writeDepths(vMap,vMapS);
-
-    //Write and show normalized vDisparity Mat
-    Mat normalized(720,imgCols,CV_32FC1);
-    normalize(vMap, normalized, 255, 0.0, NORM_MINMAX);
-    ofstream normal;
-    normal.open("Noramlized.txt");
-    writeDepths(normalized, normal);
-
-    //Theoretically multiply all values by 20
-    normalized.convertTo(normalized,-1,20,0);
-
     //Write out rows and cols for debugging
     cout<<rows<<endl;
     cout<<cols<<endl;
-    
-    //Filter for conotours
+
+    //Basic Filter for Conotours
+    Mat basicContours(rows,imgCols, CV_32FC1, Scalar(0));
     vector<vector<Point> > contours;
     Scalar color = {255,0,0};
     vector<Vec4i> hierarchy;
-    vMap.convertTo(white1,CV_8UC1);
-    findContours(white1,contours,hierarchy,CV_RETR_TREE,CV_CHAIN_APPROX_SIMPLE,Point(0,0));
-    drawContours(white1, contours, 0, color, -1);
-    imshow("Out",white1);
-    waitKey();
+    vMap.convertTo(vMap,CV_8UC1);
+    basicContours = vMap;
+    findContours(basicContours,contours,hierarchy,CV_RETR_TREE,CV_CHAIN_APPROX_SIMPLE,Point(0,0));
+    drawContours(basicContours, contours, 0, color, -1);
+    imshow("Basic",basicContours);
+
+
+    //Canny Filter for contours
+    int edgeThresh = 1;
+    int lowThreshold = 10;
+    int const max_lowThreshold = 100;
+    int ratio = 3;
+    int kernel_size = 3;
+    char* window_name = "Canny";
+    Mat cannyContours(rows,imgCols, CV_8UC1, Scalar(0));
+    Mat dst(rows,imgCols, CV_8UC1, Scalar(0));
+    blur( vMap, vMap, Size(3,3) );
+    Canny(vMap, cannyContours, lowThreshold, lowThreshold*ratio, kernel_size );
+    vMap.copyTo(dst,cannyContours);
+    imshow(window_name, dst);
+    
     return vMap;
 
 }
-
-
-
 
 
 
@@ -208,4 +204,26 @@ Mat vDisparity(Mat &depthIn)
     depthIn = max(depthIn, 0.7);
     depthIn = min(depthIn, 10.0);
     
+
+    //Write and show normalized vDisparity Mat
+    Mat normalized(720,imgCols,CV_32FC1);
+    normalize(vMap, normalized, 255, 0.0, NORM_MINMAX);
+    ofstream normal;
+    normal.open("Noramlized.txt");
+    writeDepths(normalized, normal);
+
+    //Theoretically multiply all values by 20
+    normalized.convertTo(normalized,-1,20,0);
+
+        //Write and show raw vDisparity Mat
+    //ofstream vMapS;
+    //vMapS.open("vMap.txt");
+    //imshow("vMap", vMap);
+    //writeDepths(vMap,vMapS);
+
+    //Write and show raw vDisparity Mat
+    ofstream vMapS;
+    vMapS.open("vMap.txt");
+    imshow("vMap", vMap);
+    writeDepths(vMap,vMapS);
 */
