@@ -193,9 +193,6 @@ int main() {
       cvtColor(modified,modified,CV_RGB2HSV);
       inRange(modified,Scalar(0,0,0,0),Scalar(H,S,V,0), modified);
       split(modified,channels);
-      cerr<<"Fish"<<endl;
-      cerr<<channels[0].size()<<endl;
-      cerr<<original.size()<<endl;
       original.setTo(Scalar(255,255,255), ~channels[0]);
       imshow("AR Filter", original);
 
