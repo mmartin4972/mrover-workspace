@@ -194,7 +194,9 @@ int main() {
       inRange(modified,Scalar(0,0,0,0),Scalar(H,S,V,0), modified);
       split(modified,channels);
       original.setTo(Scalar(255,255,255), ~channels[0]);
+      #if PERCEPTION_DEBUG
       imshow("AR Filter", original);
+      #endif
 
 
       tagPair = detector.findARTags(original, depth_img, rgb);
