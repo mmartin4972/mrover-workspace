@@ -78,6 +78,7 @@ int main() {
   #if PERCEPTION_DEBUG
     namedWindow("Obstacle");
     namedWindow("depth", 2);
+    namedWindow("AR Filter");
   #endif
   disk_record_init();
 
@@ -152,6 +153,14 @@ int main() {
     int thresh2 = 70000;
     createTrackbar("Main Window", "Obstacle", &thresh1, 500000);
     createTrackbar("Sub Window", "Obstacle", &thresh2, 120000);
+    
+    //Finding color threshold for AR Tags
+    int H = 180;
+    int S = 255;
+    int V = 30;
+    createTrackbar("H:","AR Filter", &H,255);
+    createTrackbar("S:","AR Filter", &S,255);
+    createTrackbar("V:","AR Filter", &V,255); 
   #endif
   
   while (true) {
@@ -173,8 +182,25 @@ int main() {
     /* Tennis ball detection*/
     arTags[0].distance = -1;
     arTags[1].distance = -1;
+    
     #if TB_DETECTION
-      tagPair = detector.findARTags(src, depth_img, rgb);
+
+      //modify image that tagPair analyzes to make it easier to detect AR Tag
+      Mat modified = src;
+      Mat original = src.clone();
+      Mat mask = Mat::zeros(src.size(), CV_8UC1);
+      Mat channels[3];
+      cvtColor(modified,modified,CV_RGB2HSV);
+      inRange(modified,Scalar(0,0,0,0),Scalar(H,S,V,0), modified);
+      split(modified,channels);
+      cerr<<"Fish"<<endl;
+      cerr<<channels[0].size()<<endl;
+      cerr<<original.size()<<endl;
+      original.setTo(Scalar(255,255,255), ~channels[0]);
+      imshow("AR Filter", original);
+
+
+      tagPair = detector.findARTags(original, depth_img, rgb);
       #if AR_RECORD
       vidWrite.write(rgb);
       #endif
