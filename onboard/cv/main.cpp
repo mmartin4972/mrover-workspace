@@ -98,8 +98,14 @@ int main() {
     //Make trackbars
     int thresh1 = 300000;
     int thresh2 = 70000;
+    int val1 = 50;
+    int val2 = 50;
+    int val3 = 50;
     createTrackbar("Main Window", "image", &thresh1, 500000);
     createTrackbar("Sub Window", "image", &thresh2, 120000);
+    createTrackbar("Value1", "image", &val1, 100);
+    createTrackbar("Value2", "image", &val2, 100);
+    createTrackbar("Value3", "image", &val3, 100);
   #endif
   
   while (true) {
@@ -184,7 +190,7 @@ int main() {
     */
 
    //New Obstacle Detection
-    vDisparity(depth_img);
+    vDisparity(depth_img, src);
     lcm_.publish("/target_list", &arTagsMessage);
     lcm_.publish("/obstacle", &obstacleMessage);
 
@@ -192,6 +198,7 @@ int main() {
       imshow("depth", depth_img);
       imshow("image", src);
       updateThresholds(thresh1,thresh2);
+      
       waitKey(FRAME_WAITKEY);
     #endif
 

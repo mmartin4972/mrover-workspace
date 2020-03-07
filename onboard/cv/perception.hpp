@@ -62,7 +62,8 @@ struct obstacle_return {
 std::pair<cv::Point2f, double> findTennisBall(cv::Mat &src, cv::Mat &depth_src);
 obstacle_return avoid_obstacle_sliding_window(cv::Mat &depth_img, cv::Mat &rgb_img, int num_windows, int rover_width);
 void updateThresholds(int in1, int in2);
-cv::Mat vDisparity(cv::Mat &depthIn);
+cv::Mat vDisparity(cv::Mat &depthIn, cv::Mat &color);
+
 
 //ar tag detector class
 #include "artag_detector.hpp"
