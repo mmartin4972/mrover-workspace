@@ -20,6 +20,11 @@ bool less_by_y(const cv::Point& lhs, const cv::Point& rhs)
   return lhs.y < rhs.y;
 }
 
+bool less_by_x(const cv::Point& lhs, const cv::Point& rhs)
+{
+  return lhs.x < rhs.x;
+}
+
 Mat vDisparity(Mat &depthIn, Mat &color)
 {
     patchNaNs(depthIn, 0.0);
@@ -185,23 +190,137 @@ Mat vDisparity(Mat &depthIn, Mat &color)
         threshold(vContours_gray,vContours_gray, thresh, maxValue, THRESH_BINARY);
         findContours(vContours_gray,contours,hierarchy,RETR_LIST,CV_CHAIN_APPROX_NONE,Point(0,0));
         drawContours(vContours, contours, -1, Scalar(0,255,0), 3);
+        
+        //Process Contours by Size
         int count = 0;
+        int inflect = 0; 
+        vector<vector<Point> > inflections= {};
         for(size_t i = 0; i < contours.size(); ++i)
         {
             if(contours[i].size() > 20)
             {
                 Point max = *max_element(contours[i].begin(), contours[i].end(), less_by_y);
                 Point min = *min_element(contours[i].begin(), contours[i].end(), less_by_y);
-                cerr<< max << " " << min << endl;
-                circle(vContours,max, 2, Scalar(0,0,255), -1, 1, 1);
-                circle(vContours,min, 2, Scalar(0,0,255), -1, 1, 1);  
+                cerr<< max << " " << min; 
+                circle(vContours,2*max, 3, Scalar(0,0,255), -1, 1, 1);
+                circle(vContours,2*min, 3, Scalar(0,0,255), -1, 1, 1);
+                if(fabs(max.x - min.x) >  70)
+                {
+                    cerr<<"BIG BOY LOCATED"<<endl;
+                    Point xmax = *max_element(contours[i].begin(), contours[i].end(), less_by_x);
+                    Point xmin = *min_element(contours[i].begin(), contours[i].end(), less_by_x);
+                    int check = 0;
+                    vector<Point> extra;
+                    bool checkDown = false;
+                    if(contours[i][3].y-contours[i][0].y < 0)
+                        checkDown = true;
+                    if(contours[i][3].y-contours[i][0].y > 0)
+                        checkDown = false;
+                    for(int j = 0; j < contours[i].size(); ++j)
+                    {
+                        if(checkDown) {
+                            if(contours[i][j+1].y-contours[i][j].y < 0)
+                                check++;
+                            if(check > 2)
+                            {
+                                extra.push_back(contours[i][j-3]);
+                                checkDown = false;
+                                check = 0;
+                                cerr<<"Discovered decrease"<<endl;
+                                cout<<extra[0]<<" ";
+                            }
+                        }
+                        else {
+                             if(contours[i][j+1].y-contours[i][j].y > 0)
+                                check++;
+                            if(check > 2)
+                            {
+                                extra.push_back(contours[i][j-3]);
+                                cout<<extra[1]<<endl;
+                                checkDown = true;
+                                check = 0;
+                                inflections.push_back(extra);
+                                cout<<"Discovered Contour"<<endl;
+                                extra = {};
+                            }
+                        }
+                    }
+                    cerr<<"Finished loop"<<endl;
+                    for(int j = inflections.size()-1; j >= 0; j--)
+                    {
+                        if(fabs(inflections[j][0].x-inflections[j][1].x) > 6) {
+                            inflections.erase(inflections.begin()+j, inflections.begin()+j+1);
+                            continue;
+                        }
+                        if(fabs(inflections[j][0].y-inflections[j][1].y) < 10 || fabs(inflections[j][0].y-inflections[j][1].y) > 400 ) {
+                            inflections.erase(inflections.begin()+j, inflections.begin()+j+1);
+                            continue;
+                        }
+                        circle(vContours, 2*inflections[j][0], 3, Scalar(255,255,255), -1, 1, 1);
+                        circle(vContours, 2*inflections[j][1], 3, Scalar(255,255,255), -1, 1, 1);
+                        inflect++;
+                    }
+
+
+                }
+                    
                 count++;
+                cout<<endl;
             }
             
         }
-        cerr<<endl<<"Contours Drawn: "<<count<<endl;
-        imshow("Contours", vContours);
+
+        // === New Method for U Map ===
+        Mat uContours, uContours_gray;
+        vector<vector<Point> > ucontours;
+        vector<Vec4i> uhierarchy;
+        uContours = uhist;
+        uContours_gray.convertTo(uContours_gray, CV_8U);
+        cvtColor(uContours, uContours_gray, COLOR_BGR2GRAY);
+        imshow("Gray", uContours_gray);
+        double uthresh = 17;
+        double umaxValue = 255;
+        threshold(uContours_gray,uContours_gray, uthresh, umaxValue, THRESH_BINARY);
+        findContours(uContours_gray,ucontours,uhierarchy,RETR_LIST,CV_CHAIN_APPROX_NONE,Point(0,0));
+        drawContours(uContours, ucontours, -1, Scalar(0,255,0), 3);
+        vector<vector<Point> > uExtrema = {};
+
+        for(int i = 0; i < ucontours.size(); ++i)
+        {
+         if(ucontours[i].size() > 10)
+            {
+                Point umax = *max_element(ucontours[i].begin(), ucontours[i].end(), less_by_x);
+                Point umin = *min_element(ucontours[i].begin(), ucontours[i].end(), less_by_x);
+                vector<Point> temp = {umin, umax};
+                uExtrema.push_back(temp);
+                cerr<< umax << " " << umin; 
+                circle(uContours,2*umax, 3, Scalar(0,0,255), -1, 1, 1);
+                circle(uContours,2*umin, 3, Scalar(0,0,255), -1, 1, 1);
+            }
+        }
+
+        int angle = 15;
+        for( size_t i = 0; i < inflections.size(); i++ )
+        {
+            for(size_t j = 0; j < uExtrema.size(); j++)
+            {
+                        if(uExtrema[j][0].y < 100 && uExtrema[j][0].y > 8)
+                            if(fabs(uExtrema[j][0].y-uExtrema[j][1].y) < angle)    
+                                if(fabs(inflections[i][0].x-uExtrema[j][0].y) < angle && fabs(inflections[i][1].x-uExtrema[j][1].y) < angle)
+                                {
+                                    rectangle(color, Point(uExtrema[j][0].x,inflections[i][0].y), Point(uExtrema[j][1].x,inflections[i][1].y), Scalar(0,0,255), 1, 8, 0);
+                                    cerr<<"OVERLAP"<<endl;
+                                }
+            }
+        }
         
+        
+        cerr<<endl<<"Contours Drawn: "<<count<<endl;
+        cerr<<"Total Contours: "<<contours.size()<<endl;
+        cerr<<"Infelctions: "<<inflect<<endl;
+        imshow("Contours", vContours);
+        imshow("uContours", uContours);
+        imshow("Final", color);
 
 /*
         int angle = 5;
