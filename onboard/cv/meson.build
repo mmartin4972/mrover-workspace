@@ -69,6 +69,6 @@ configure_file(
 	configuration: conf_data)
 
 executable('onboard_cv',
-		   'opencv.cpp',
+		   'main.cpp', 'camera.cpp', 'artag_detector.cpp', 'pcl.cpp',
 		   dependencies : all_deps, cpp_args : '-mavx',
 		   install : true)
