@@ -1,6 +1,6 @@
 #include "camera.hpp"
 #include "perception.hpp"
-
+/*
 #if ZED_SDK_PRESENT
 
 #pragma GCC diagnostic ignored "-Wreorder" //Turns off warning checking for sl lib files
@@ -226,7 +226,7 @@ cv::Mat Camera::Impl::depth() {
   return img;
 }
 
-#endif
+
 
 Camera::Camera() : impl_(new Camera::Impl) {
 }
@@ -250,3 +250,5 @@ cv::Mat Camera::depth() {
 void Camera::getDataCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr &p_pcl_point_cloud) {
   this->impl_->dataCloud(p_pcl_point_cloud);
 }
+#endif
+*/

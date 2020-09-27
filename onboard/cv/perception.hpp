@@ -36,7 +36,9 @@
 #pragma GCC diagnostic ignored "-Wreorder"
 #pragma GCC diagnostic ignored "-Wcomment"
 
+#if ZED_SDK_PRESENT
 #include <sl/Camera.hpp>
+#endif 
 
 #if PERCEPTION_DEBUG
   #include <opencv2/highgui/highgui.hpp>

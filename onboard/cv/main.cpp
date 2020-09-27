@@ -6,7 +6,7 @@
 
 using namespace cv;
 using namespace std;
-
+/*
 int calcFocalWidth(){   //mm
     return tan(fieldofView/2) * focalLength;
 }
@@ -27,7 +27,7 @@ double getAngle(float xPixel, float wPixel){
 float getObstacleMin(float expected){
     return expected - obstacleThreshold/sin(angleOffset);
 }
-
+/*
 bool cam_grab_succeed(Camera &cam, int & counter_fail) {
   while (!cam.grab()) {
     counter_fail++;
@@ -40,7 +40,7 @@ bool cam_grab_succeed(Camera &cam, int & counter_fail) {
   counter_fail = 0;
   return true;
 }
-
+*/
 //Creates a PCL Visualizer
 shared_ptr<pcl::visualization::PCLVisualizer> createRGBVisualizer(pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr cloud) {
     // Open 3D viewer and add point cloud
@@ -55,7 +55,7 @@ shared_ptr<pcl::visualization::PCLVisualizer> createRGBVisualizer(pcl::PointClou
     viewer->setCameraPosition(0,0,-800,0,-1,0);
     return (viewer);
 }
-
+/*
 static string rgb_foldername, depth_foldername;
 void disk_record_init() {
   #if WRITE_CURR_FRAME_TO_DISK
@@ -81,10 +81,13 @@ void write_curr_frame_to_disk(Mat rgb, Mat depth, int counter) {
     cv::imwrite(rgb_foldername +  fileName + std::string(".jpg"), rgb );
     cv::imwrite(depth_foldername +  fileName + std::string(".exr"), depth );
 }
-
+*/
 int main() {
+  int j = 0;
+  while (j < 49){
+    
   /*initialize camera*/
-  Camera cam;
+ /* Camera cam;
   cam.grab();
   int j = 0;
   int counter_fail = 0;
@@ -122,7 +125,7 @@ int main() {
   }
   #endif
 
-  /*initialize lcm messages*/
+  /*initialize lcm messages*//*
   lcm::LCM lcm_;
   rover_msgs::TargetList arTagsMessage;
   rover_msgs::Target* arTags = arTagsMessage.targetList;
@@ -136,9 +139,9 @@ int main() {
   pair<Tag, Tag> tagPair;
   int left_tag_buffer = 0;
   int right_tag_buffer = 0;
-
+*/
   /* --- Dynamically Allocate Point Cloud --- */
-  sl::Resolution cloud_res = sl::Resolution(PT_CLOUD_WIDTH, PT_CLOUD_HEIGHT);
+  //sl::Resolution cloud_res = sl::Resolution(PT_CLOUD_WIDTH, PT_CLOUD_HEIGHT);
   pcl::PointCloud<pcl::PointXYZRGB>::Ptr point_cloud_ptr(new pcl::PointCloud<pcl::PointXYZRGB>); //This is a smart pointer so no need to worry ab deleteing it
 
   #if PERCEPTION_DEBUG
@@ -146,7 +149,7 @@ int main() {
     shared_ptr<pcl::visualization::PCLVisualizer> viewer = createRGBVisualizer(point_cloud_ptr); //This is a smart pointer so no need to worry ab deleteing it
     shared_ptr<pcl::visualization::PCLVisualizer> viewer_original = createRGBVisualizer(point_cloud_ptr);
   #endif
-  
+  /*
   while (true) {
     if (!cam_grab_succeed(cam, counter_fail)) break;
 
@@ -164,7 +167,7 @@ int main() {
       }
     #endif
 
-    /* AR Tag Detection*/
+    /* AR Tag Detection*//*
     arTags[0].distance = -1;
     arTags[1].distance = -1;
     #if AR_DETECTION
@@ -214,20 +217,22 @@ int main() {
 
     //Update Point Cloud
     point_cloud_ptr->clear();
-    point_cloud_ptr->points.resize(cloud_res.area());
+    point_cloud_ptr->points.resize(57600); // Resolution of a 320 x 180 image replace with cloud_res.size()
     point_cloud_ptr->width = PT_CLOUD_WIDTH;
     point_cloud_ptr->height = PT_CLOUD_HEIGHT;
     
-
+/*
     cam.getDataCloud(point_cloud_ptr);
-    /*
+    */
+   
     string name = ("pcl" + to_string(j) + ".pcd");
     if (pcl::io::loadPCDFile<pcl::PointXYZRGB> (name, *point_cloud_ptr) == -1) //* load the file
   {
     PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
     return (-1);
   }
-  
+   
+  /*
     #if OBSTACLE_RECORD
     string name = ("pcl" + to_string(j) + ".pcd");
     cerr<<name<<"\n";
@@ -239,9 +244,11 @@ int main() {
     //Update Original 3D Viewer
     viewer_original->updatePointCloud(point_cloud_ptr);
     viewer_original->spinOnce(10);
+    for(int i = 0; i < 10000000; i++){}
     cerr<<"Original W: " <<point_cloud_ptr->width<<" Original H: "<<point_cloud_ptr->height<<endl;
     #endif
-
+    #endif
+/*
     //Run Obstacle Detection
     obstacle_return obstacle_detection = pcl_obstacle_detection(point_cloud_ptr, viewer);  
     if(obstacle_detection.bearing > 0.05 || obstacle_detection.bearing < -0.05) {
@@ -258,8 +265,8 @@ int main() {
     #endif
     
     #endif
-    
-    /* --- Publish LCMs --- */
+   
+    /* --- Publish LCMs --- */ /*
     lcm_.publish("/target_list", &arTagsMessage);
     lcm_.publish("/obstacle", &obstacleMessage);
 
@@ -276,6 +283,9 @@ int main() {
   #if AR_RECORD
   vidWrite.release();
   #endif
+  */
+  }
+  j++;
   return 0;
 }
 
