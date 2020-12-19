@@ -1,0 +1,7 @@
+# ninja log v5
+1	879	1606265362	jetson_percep.p/test-kernel.cu.o	9bb32b95996340df
+0	13433	1606265375	jetson_percep.p/camera.cpp.o	b53393ce8de4dff2
+0	13586	1606265375	jetson_percep.p/artag_detector.cpp.o	27c9c9cc18894bd
+0	14055	1606265375	jetson_percep.p/main.cpp.o	3123723f3ae8583d
+1	14290	1606265376	jetson_percep.p/pcl_gpu.cpp.o	7a017a8d262e2178
+14290	15940	1606265377	jetson_percep	35a8dc9a37912d75

@@ -1,0 +1,27 @@
+[
+  {
+    "directory": "/home/matt/mrover-workspace/jetson/percep/builddir",
+    "command": "c++ -Ijetson_percep.p -I. -I.. -I/usr/local/zed/include -I/usr/local/cuda/include -I/usr/local/include/pcl-1.11 -I/usr/local/include/eigen3 -I/usr/include/boost -I/usr/local/include/vtk-8.2 -I/usr/include/flann -I/usr/local/include/opencv -I/usr/local/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -std=c++14 -g -mavx -MD -MQ jetson_percep.p/main.cpp.o -MF jetson_percep.p/main.cpp.o.d -o jetson_percep.p/main.cpp.o -c ../main.cpp",
+    "file": "../main.cpp"
+  },
+  {
+    "directory": "/home/matt/mrover-workspace/jetson/percep/builddir",
+    "command": "c++ -Ijetson_percep.p -I. -I.. -I/usr/local/zed/include -I/usr/local/cuda/include -I/usr/local/include/pcl-1.11 -I/usr/local/include/eigen3 -I/usr/include/boost -I/usr/local/include/vtk-8.2 -I/usr/include/flann -I/usr/local/include/opencv -I/usr/local/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -std=c++14 -g -mavx -MD -MQ jetson_percep.p/camera.cpp.o -MF jetson_percep.p/camera.cpp.o.d -o jetson_percep.p/camera.cpp.o -c ../camera.cpp",
+    "file": "../camera.cpp"
+  },
+  {
+    "directory": "/home/matt/mrover-workspace/jetson/percep/builddir",
+    "command": "c++ -Ijetson_percep.p -I. -I.. -I/usr/local/zed/include -I/usr/local/cuda/include -I/usr/local/include/pcl-1.11 -I/usr/local/include/eigen3 -I/usr/include/boost -I/usr/local/include/vtk-8.2 -I/usr/include/flann -I/usr/local/include/opencv -I/usr/local/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -std=c++14 -g -mavx -MD -MQ jetson_percep.p/artag_detector.cpp.o -MF jetson_percep.p/artag_detector.cpp.o.d -o jetson_percep.p/artag_detector.cpp.o -c ../artag_detector.cpp",
+    "file": "../artag_detector.cpp"
+  },
+  {
+    "directory": "/home/matt/mrover-workspace/jetson/percep/builddir",
+    "command": "c++ -Ijetson_percep.p -I. -I.. -I/usr/local/zed/include -I/usr/local/cuda/include -I/usr/local/include/pcl-1.11 -I/usr/local/include/eigen3 -I/usr/include/boost -I/usr/local/include/vtk-8.2 -I/usr/include/flann -I/usr/local/include/opencv -I/usr/local/include -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -std=c++14 -g -mavx -MD -MQ jetson_percep.p/pcl_gpu.cpp.o -MF jetson_percep.p/pcl_gpu.cpp.o.d -o jetson_percep.p/pcl_gpu.cpp.o -c ../pcl_gpu.cpp",
+    "file": "../pcl_gpu.cpp"
+  },
+  {
+    "directory": "/home/matt/mrover-workspace/jetson/percep/builddir",
+    "command": "nvcc -Xcompiler=-Wall -Xcompiler=-Winvalid-pch -Xcompiler=-Wnon-virtual-dtor -g -I/usr/local/include/opencv -I/usr/local/include -I/usr/include/flann -I/usr/include/flann -I/usr/local/include/vtk-8.2 -I/usr/local/include/vtk-8.2 -I/usr/include/boost -I/usr/include/boost -I/usr/local/include/eigen3 -I/usr/local/include/eigen3 -I/usr/local/include/pcl-1.11 -I/usr/local/include/pcl-1.11 -I/usr/local/cuda/include -I/usr/local/cuda/include -I/usr/local/zed/include -I/usr/local/zed/include -I.. -I. -Ijetson_percep.p -Ijetson_percep.p -o jetson_percep.p/test-kernel.cu.o -c ../test-kernel.cu",
+    "file": "../test-kernel.cu"
+  }
+]
